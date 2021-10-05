@@ -40,5 +40,4 @@ abstract class DB {
   static Future<int> delete(String table, Model model) async =>
       await _db!.delete(table, where: 'id = ?', whereArgs: [model.id]);
 
-  static Future<Batch> batch() async => _db!.batch();
 }
