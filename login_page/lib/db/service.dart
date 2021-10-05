@@ -39,9 +39,9 @@ class DBService {
     await DB.init();
     bool isSaved = false;
     if (model != null) {
-      int inserted = await DB.delete(MovieModel.table, model);
+      int deleted = await DB.delete(MovieModel.table, model);
 
-      isSaved = inserted == 1 ? true : false;
+      isSaved = deleted == 1 ? true : false;
     }
 
     return isSaved;
