@@ -27,28 +27,42 @@ class _JsonExampleState extends State<JsonExample> {
             child: FutureBuilder(
               future: getJSONData(),
               builder: (context, snapshot) {
-                List<UserModelJson> _insideList =
-                    snapshot.data as List<UserModelJson>;
-                if (_insideList != null) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _insideList.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text("id: ${_insideList[index].id}"),
-                        leading: CircleAvatar(
-                          radius: 30,
-                          backgroundImage: NetworkImage(
-                            _insideList[index].thumbnailUrl,
+
+                if(snapshot.hasData && snapshot.data !=null){
+                  List<UserModelJson> _insideList = snapshot.data as List<UserModelJson>;
+                  if(_insideList.length >0){
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: _insideList.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text("id: ${_insideList[index].id}"),
+                          leading: CircleAvatar(
+                            radius: 30,
+                            backgroundImage: NetworkImage(
+                              _insideList[index].thumbnailUrl,
+                            ),
                           ),
-                        ),
-                        subtitle: Text("title: ${_insideList[index].title}"),
-                      );
-                    },
-                  );
-                } else {
-                  return  CircularProgressIndicator();
+                          subtitle: Text("title: ${_insideList[index].title}"),
+                        );
+                      },
+                    );
+                  }
                 }
+
+                else if(snapshot.hasError){
+                  return Container(
+                    height: 200,
+                    width: 400,
+                    color: Colors.red,
+                  );
+                }
+
+                else {
+                  return  Center(child: CircularProgressIndicator());
+                }
+                return Container();
+
               },
             ),
           ),
