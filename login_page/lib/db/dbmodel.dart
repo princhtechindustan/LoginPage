@@ -1,7 +1,7 @@
 
 
 class MovieModel extends Model {
-  static String table = 'movie_table';
+  static String table = 'table';
 
   int? id;
   String movieName;
