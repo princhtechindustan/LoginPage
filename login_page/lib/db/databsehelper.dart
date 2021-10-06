@@ -24,7 +24,7 @@ abstract class DB {
 
   static void onCreate(Database db, int version) async {
     await db.execute(
-        'CREATE TABLE products (id INTEGER PRIMARY KEY AUTOINCREMENT, movieName STRING,  directorName STRING, date STRING, productPic String)');
+        'CREATE TABLE table (id INTEGER PRIMARY KEY AUTOINCREMENT, movieName STRING,  directorName STRING, date STRING, productPic String)');
 
   }
 
