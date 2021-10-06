@@ -5,13 +5,11 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:login_page/db/dbmodel.dart';
 import 'package:login_page/db/service.dart';
-import 'package:login_page/showdb.dart';
+import 'package:login_page/db/showdb.dart';
 
 class DbAddMovie extends StatefulWidget {
-  
-  const DbAddMovie({Key? key}) : super(key: key);
 
-  
+  const DbAddMovie({Key? key}) : super(key: key);
 
   @override
   _DbAddMovieState createState() => _DbAddMovieState();
@@ -23,30 +21,30 @@ class _DbAddMovieState extends State<DbAddMovie> {
   TextEditingController directorNameController = TextEditingController();
   TextEditingController yearController = TextEditingController();
   DateTime dateTimeController = DateTime.now();
-  final globalFormKey= GlobalKey<FormState>();
+  final globalFormKey = GlobalKey<FormState>();
   late DBService dbService;
   late MovieModel model;
   late bool isEditModel;
   bool isTextArea = false;
+  Future<PickedFile>? imageFile;
 
-
+  // ImagePicker _picker = new ImagePicker();
 
   @override
   void initState() {
     super.initState();
 
     dbService = new DBService();
-    model = new MovieModel(movieName: '', date: '', directorName: '', productPic: '');
-
+    model =
+    new MovieModel(movieName: '', date: '', directorName: '', productPic: '');
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Sqflite Example"),
+       elevation: 0,
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -86,10 +84,14 @@ class _DbAddMovieState extends State<DbAddMovie> {
                       color: Colors.black,
                     ),
                   ),
-                  onChanged:(value)=> {
+                  onChanged: (value) =>
+                  {
                     this.model.movieName = value,
                   },
-                  validator: (value){
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter Movie Name";
+                    }
                     return null;
                   },
                 ),
@@ -126,10 +128,11 @@ class _DbAddMovieState extends State<DbAddMovie> {
                       color: Colors.black,
                     ),
                   ),
-                  onChanged:(value)=> {
+                  onChanged: (value) =>
+                  {
                     this.model.directorName = value,
                   },
-                  validator: (value){
+                  validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Please enter Director Name";
                     }
@@ -142,8 +145,12 @@ class _DbAddMovieState extends State<DbAddMovie> {
                 child: Text("Choose Image"),
                 onPressed: () => pickImage(ImageSource.gallery),
               ),
+              ElevatedButton(
+                child: Text("Choose Image from Camera"),
+                onPressed: () => pickImage(ImageSource.gallery),
+              ),
               margin_20,
-              image  != null
+              image != null
                   ? Image.file(
                 image!,
                 width: 120,
@@ -155,7 +162,7 @@ class _DbAddMovieState extends State<DbAddMovie> {
               ),
               margin_20,
               Padding(
-                padding: const EdgeInsets.only(left: 20,right: 20),
+                padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Row(
                   children: [
                     ElevatedButton(
@@ -220,44 +227,47 @@ class _DbAddMovieState extends State<DbAddMovie> {
                 ),
               ),
               margin_20,
-              ElevatedButton(
-                child: Text("insert"),
-                onPressed: () async{
-                  // int insertData = await db.insert({
-                  //   DataBaseHelper.columnMovieName : '13 Reasons Why',
-                  //   DataBaseHelper.columnDirectorName:'Tom McCarthy',
-                  //   DataBaseHelper.columnDate:'12-03-2020',
-                  //   DataBaseHelper.columnPoster:'/path/img.jpg'
-                  // });
-                  // print("the inserted id is $insertData");
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ShowDataBase(),
-                    ),
-                  );
-                } ,
-              ),
-              ElevatedButton(
-                child: Text("query"),
-                onPressed: () async{
-                  // List<Map<String,dynamic>> query = await db.queryAll();
-                  // print(query);
-                } ,
-              ),
-              ElevatedButton(
-                child: Text("submit"),
-                onPressed: () {
+              // ElevatedButton(
+              //   child: Text("insert"),
+              //   onPressed: () async {
+              //     // int insertData = await db.insert({
+              //     //   DataBaseHelper.columnMovieName : '13 Reasons Why',
+              //     //   DataBaseHelper.columnDirectorName:'Tom McCarthy',
+              //     //   DataBaseHelper.columnDate:'12-03-2020',
+              //     //   DataBaseHelper.columnPoster:'/path/img.jpg'
+              //     // });
+              //     print("the inserted id is ");
+              //
+              //     MovieModel movieModel =MovieModel(movieName: "movieName",
+              //         directorName: "directorName",
+              //         productPic: "productPic",
+              //         date: "date");
+              //
+              //     print("datttaa $movieModel");
+              //     // if(globalFormKey.currentState!.validate()){
+              //     //   Navigator.push(
+              //     //     context,
+              //     //     MaterialPageRoute(
+              //     //       builder: (context) => ShowDataBase(),
+              //     //     ),
+              //     //   );
+              //     // }
+              //
+              //   },
+              // ),
 
-                } ,
-              ),
+              // ElevatedButton(
+              //   child: Text("query"),
+              //   onPressed: () async {
+              //
+              //   },
+              // ),
+             button()
             ],
           ),
         ),
       ),
     );
-
-
   }
 
   var margin_30 = SizedBox(
@@ -310,23 +320,34 @@ class _DbAddMovieState extends State<DbAddMovie> {
     }
   }
 
-  Future<Null> selectDate(BuildContext context) async{
+  Future<Null> selectDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
         context: context,
         initialDate: dateTimeController,
         firstDate: DateTime(1948),
         lastDate: DateTime(2090)
     );
-    if(pickedDate !=null)
-    {
+    if (pickedDate != null) {
       setState(() {
-        dateTimeController =pickedDate;
+        dateTimeController = pickedDate;
         print(dateTimeController.toString());
       });
     }
   }
 
-
-
-
+  button() {
+   return ElevatedButton(
+      child: Text("submit"),
+      onPressed: () {
+        dbService.addProduct(model).then((value) => (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ShowDataBase(),
+            ),
+          );
+        });
+      },
+    );
+  }
 }
