@@ -28,7 +28,7 @@ class DBService {
 
   Future<List<MovieModel>> getProducts() async {
     await DB.init();
-    List<Map<String, dynamic>> products = await DB.query(MovieModel.table);
+    List<Map<String, dynamic>> products = await DB.query('movieList');
 
     return products.map((item) => MovieModel.fromMap(item)).toList();
   }

@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:login_page/db/dbmodel.dart';
 import 'package:login_page/db/service.dart';
-import 'package:login_page/db/showdb.dart';
+import 'package:login_page/showdb.dart';
 
 class DbAddMovie extends StatefulWidget {
 
@@ -36,7 +36,7 @@ class _DbAddMovieState extends State<DbAddMovie> {
 
     dbService = new DBService();
     model =
-    new MovieModel(movieName: '', date: '', directorName: '', productPic: '');
+    new MovieModel(movieName: 'movie', date: '432', directorName: 'Tom', productPic: 'image/path');
   }
 
   @override
@@ -339,13 +339,17 @@ class _DbAddMovieState extends State<DbAddMovie> {
    return ElevatedButton(
       child: Text("submit"),
       onPressed: () {
+        print("calleddd");
+       print("llllisttt ---- ${dbService.getProducts()}");
         dbService.addProduct(model).then((value) => (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ShowDataBase(),
-            ),
-          );
+
+          print("printt $value");
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => ShowDataBase(),
+          //   ),
+          // );
         });
       },
     );

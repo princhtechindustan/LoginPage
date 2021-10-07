@@ -1,7 +1,7 @@
 
 
 class MovieModel {
-  static String table = 'products';
+  static String table = 'movieList';
 
   int id;
   String movieName;

@@ -7,23 +7,23 @@ class MovieModel extends Model {
   String movieName;
   String directorName;
   String productPic;
-  String date;
+  String? date;
 
   MovieModel({
     this.id,
     required this.movieName,
     required this.directorName,
     required this.productPic,
-    required this.date,
+     this.date,
   });
 
   static MovieModel fromMap(Map<String, dynamic> map) {
     return MovieModel(
-      id: map["id"],
-      movieName: map['movieName'].toString(),
+      id: map['id'],
+      movieName: map['movieName'],
       directorName: map['directorName'],
       productPic: map['productPic'],
-      date: map['date'],
+      //date: map['date'],
     );
   }
 
@@ -31,9 +31,9 @@ class MovieModel extends Model {
     Map<String, dynamic> map = {
       'id': id,
       'movieName': movieName,
-      'director': directorName,
+      'directorName': directorName,
       'productPic': productPic,
-      'date': date
+     // 'date': date
     };
 
     if (id != null) {
