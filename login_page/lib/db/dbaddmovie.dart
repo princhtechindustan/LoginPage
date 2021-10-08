@@ -5,11 +5,13 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:login_page/db/dbmodel.dart';
 import 'package:login_page/db/service.dart';
-import 'package:login_page/showdb.dart';
+import 'package:login_page/db/showdb.dart';
+import 'package:login_page/uIUx/homePage.dart';
 
 class DbAddMovie extends StatefulWidget {
-
-  const DbAddMovie({Key? key}) : super(key: key);
+  DbAddMovie({Key? key, this.model, this.isEditMode = false}) : super(key: key);
+  MovieModel? model;
+  bool? isEditMode;
 
   @override
   _DbAddMovieState createState() => _DbAddMovieState();
@@ -33,10 +35,15 @@ class _DbAddMovieState extends State<DbAddMovie> {
   @override
   void initState() {
     super.initState();
-
     dbService = new DBService();
-    model =
-    new MovieModel(movieName: 'movie', date: '432', directorName: 'Tom', productPic: 'image/path');
+    model = new MovieModel(
+        movieName: 'movie',
+        date: '432',
+        directorName: 'Tom',
+        productPic: 'image/path');
+    if (widget.isEditMode!) {
+      model = widget.model!;
+    }
   }
 
   @override
@@ -44,7 +51,7 @@ class _DbAddMovieState extends State<DbAddMovie> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Sqflite Example"),
-       elevation: 0,
+        elevation: 0,
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -54,8 +61,8 @@ class _DbAddMovieState extends State<DbAddMovie> {
             children: [
               margin_20,
               Container(
-                margin: EdgeInsets.only(
-                    left: 40, right: 40, top: 10, bottom: 10),
+                margin:
+                    EdgeInsets.only(left: 40, right: 40, top: 10, bottom: 10),
                 child: TextFormField(
                   controller: movieNameController,
                   style: TextStyle(
@@ -84,8 +91,7 @@ class _DbAddMovieState extends State<DbAddMovie> {
                       color: Colors.black,
                     ),
                   ),
-                  onChanged: (value) =>
-                  {
+                  onChanged: (value) => {
                     this.model.movieName = value,
                   },
                   validator: (value) {
@@ -98,8 +104,8 @@ class _DbAddMovieState extends State<DbAddMovie> {
               ),
               margin_20,
               Container(
-                margin: EdgeInsets.only(
-                    left: 40, right: 40, top: 10, bottom: 10),
+                margin:
+                    EdgeInsets.only(left: 40, right: 40, top: 10, bottom: 10),
                 child: TextFormField(
                   controller: directorNameController,
                   style: TextStyle(
@@ -128,8 +134,7 @@ class _DbAddMovieState extends State<DbAddMovie> {
                       color: Colors.black,
                     ),
                   ),
-                  onChanged: (value) =>
-                  {
+                  onChanged: (value) => {
                     this.model.directorName = value,
                   },
                   validator: (value) {
@@ -152,14 +157,14 @@ class _DbAddMovieState extends State<DbAddMovie> {
               margin_20,
               image != null
                   ? Image.file(
-                image!,
-                width: 120,
-                height: 120,
-                fit: BoxFit.cover,
-              )
+                      image!,
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                    )
                   : FlutterLogo(
-                size: 120,
-              ),
+                      size: 120,
+                    ),
               margin_20,
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
@@ -244,14 +249,14 @@ class _DbAddMovieState extends State<DbAddMovie> {
               //         date: "date");
               //
               //     print("datttaa $movieModel");
-              //     // if(globalFormKey.currentState!.validate()){
-              //     //   Navigator.push(
-              //     //     context,
-              //     //     MaterialPageRoute(
-              //     //       builder: (context) => ShowDataBase(),
-              //     //     ),
-              //     //   );
-              //     // }
+              //     if(globalFormKey.currentState!.validate()){
+              //       Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //           builder: (context) => ShowDataBase(),
+              //         ),
+              //       );
+              //     }
               //
               //   },
               // ),
@@ -262,7 +267,7 @@ class _DbAddMovieState extends State<DbAddMovie> {
               //
               //   },
               // ),
-             button()
+              button()
             ],
           ),
         ),
@@ -325,8 +330,7 @@ class _DbAddMovieState extends State<DbAddMovie> {
         context: context,
         initialDate: dateTimeController,
         firstDate: DateTime(1948),
-        lastDate: DateTime(2090)
-    );
+        lastDate: DateTime(2090));
     if (pickedDate != null) {
       setState(() {
         dateTimeController = pickedDate;
@@ -336,22 +340,74 @@ class _DbAddMovieState extends State<DbAddMovie> {
   }
 
   button() {
-   return ElevatedButton(
-      child: Text("submit"),
-      onPressed: () {
-        print("calleddd");
-       print("llllisttt ---- ${dbService.getProducts()}");
-        dbService.addProduct(model).then((value) => (){
-
-          print("printt $value");
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => ShowDataBase(),
-          //   ),
-          // );
-        });
-      },
+    // return ElevatedButton(
+    //   child: Text("submit"),
+    //   onPressed: () {
+    //     print("calleddd");
+    //     // print("llllisttt ---- ${dbService.getProducts()}");
+    //     // if (globalFormKey.currentState!.validate()) {
+    //     //   dbService.addProduct(model).then((value) => (){
+    //     //     // print("printt $value");
+    //     //     Navigator.push(
+    //     //         context,
+    //     //         MaterialPageRoute(builder: (context) => ShowDataBase(),),);
+    //     //   });
+    //     // }
+    //     if(globalFormKey.currentState!.validate()){
+    //       Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //           builder: (context) => ShowDataBase(),
+    //         ),
+    //       );
+    //     }
+    //   },
+    // );
+    return new Align(
+      alignment: Alignment.center,
+      child: InkWell(
+        onTap: () {
+          if (globalFormKey.currentState!.validate()) {
+            print(model.toMap());
+            if (widget.isEditMode!) {
+              dbService.updateProduct(model).then(
+                (value) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DbAddMovie(),
+                    ),
+                  );
+                },
+              );
+            } else {
+              dbService.addProduct(model).then((value) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShowDataBase(),
+                  ),
+                );
+              });
+            }
+          }
+        },
+        child: Container(
+          height: 40.0,
+          margin: EdgeInsets.all(10),
+          width: 100,
+          color: Colors.blueAccent,
+          child: Center(
+            child: Text(
+              "Save Product",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
