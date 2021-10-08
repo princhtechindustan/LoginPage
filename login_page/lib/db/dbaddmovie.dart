@@ -6,11 +6,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:login_page/db/dbmodel.dart';
 import 'package:login_page/db/service.dart';
 import 'package:login_page/db/showdb.dart';
-import 'package:login_page/uIUx/homePage.dart';
 
 class DbAddMovie extends StatefulWidget {
-  DbAddMovie({Key? key, this.model, this.isEditMode = false}) : super(key: key);
-  MovieModel? model;
+  DbAddMovie({Key? key, this.modelC, this.isEditMode = false})
+      : super(key: key);
+  MovieModel? modelC;
   bool? isEditMode;
 
   @override
@@ -28,9 +28,14 @@ class _DbAddMovieState extends State<DbAddMovie> {
   late MovieModel model;
   late bool isEditModel;
   bool isTextArea = false;
-  Future<PickedFile>? imageFile;
 
+  // Future<PickedFile>? imageFile;
   // ImagePicker _picker = new ImagePicker();
+  Future<PickedFile>? _imageFile;
+  ImagePicker _picker = new ImagePicker();
+  late Future<File>? imageFile;
+
+  // late Image image;
 
   @override
   void initState() {
@@ -42,7 +47,7 @@ class _DbAddMovieState extends State<DbAddMovie> {
         directorName: 'Tom',
         productPic: 'image/path');
     if (widget.isEditMode!) {
-      model = widget.model!;
+      model = widget.modelC!;
     }
   }
 
@@ -146,25 +151,38 @@ class _DbAddMovieState extends State<DbAddMovie> {
                 ),
               ),
               margin_20,
-              ElevatedButton(
-                child: Text("Choose Image"),
-                onPressed: () => pickImage(ImageSource.gallery),
-              ),
-              ElevatedButton(
-                child: Text("Choose Image from Camera"),
-                onPressed: () => pickImage(ImageSource.gallery),
-              ),
+              // ElevatedButton(
+              //   child: Text("Choose Image"),
+              //   onPressed: () => pickImage(ImageSource.gallery),
+              // ),
+              // ElevatedButton(
+              //   child: Text("Choose Image from Camera"),
+              //   onPressed: () => pickImage(ImageSource.gallery),
+              // ),
               margin_20,
-              image != null
-                  ? Image.file(
-                      image!,
-                      width: 120,
-                      height: 120,
-                      fit: BoxFit.cover,
-                    )
-                  : FlutterLogo(
-                      size: 120,
-                    ),
+
+              // image != null
+              //     ? Image.file(
+              //         image!,
+              //         width: 120,
+              //         height: 120,
+              //         fit: BoxFit.cover,
+              //       )
+              //     : FlutterLogo(
+              //         size: 120,
+              //       ),
+
+              margin_10,
+              picPicker(
+                model.productPic,
+                (file) => {
+                  setState(
+                    () {
+                      model.productPic = file.path;
+                    },
+                  )
+                },
+              ),
               margin_20,
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
@@ -311,19 +329,20 @@ class _DbAddMovieState extends State<DbAddMovie> {
     width: 30,
   );
 
-  Future pickImage(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-
-      if (image == null) {
-        return "Please Selected the image";
-      }
-      final tempImage = File(image.path);
-      setState(() => this.image = tempImage);
-    } on PlatformException catch (e) {
-      print('Failed to pick image $e');
-    }
-  }
+  // Future pickImage(ImageSource source) async {
+  //   try {
+  //     final image = await ImagePicker().pickImage(source: source);
+  //
+  //     if (image == null) {
+  //       return "Please Selected the image";
+  //     }
+  //     final tempImage = File(image.path);
+  //     // setState(() => this.image = tempImage);
+  //     setState(() => model.productPic = tempImage as String);
+  //   } on PlatformException catch (e) {
+  //     print('Failed to pick image $e');
+  //   }
+  // }
 
   Future<Null> selectDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
@@ -375,7 +394,7 @@ class _DbAddMovieState extends State<DbAddMovie> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DbAddMovie(),
+                      builder: (context) => ShowDataBase(),
                     ),
                   );
                 },
@@ -395,11 +414,11 @@ class _DbAddMovieState extends State<DbAddMovie> {
         child: Container(
           height: 40.0,
           margin: EdgeInsets.all(10),
-          width: 100,
+          width: 150,
           color: Colors.blueAccent,
           child: Center(
             child: Text(
-              "Save Product",
+              "Add Movie ",
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -408,6 +427,55 @@ class _DbAddMovieState extends State<DbAddMovie> {
           ),
         ),
       ),
+    );
+  }
+
+  picPicker(String fileName, Function onFilePicked) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 35.0,
+              width: 35.0,
+              child: new IconButton(
+                padding: EdgeInsets.all(0),
+                icon: Icon(Icons.image, size: 35.0),
+                onPressed: () {
+                  _imageFile = _picker.pickImage(source: ImageSource.gallery)
+                      as Future<PickedFile>?;
+                  _imageFile!.then((file) async {
+                    onFilePicked(file);
+                  });
+                },
+              ),
+            ),
+            SizedBox(
+              height: 35.0,
+              width: 35.0,
+              child: new IconButton(
+                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                icon: Icon(Icons.camera, size: 35.0),
+                onPressed: () {
+                  _imageFile = _picker.pickImage(source: ImageSource.camera)
+                      as Future<PickedFile>?;
+                  _imageFile?.then((file) async {
+                    onFilePicked(file);
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+        fileName != null
+            ? Image.file(
+                File(fileName),
+                width: 300,
+                height: 300,
+              )
+            : new Container()
+      ],
     );
   }
 }
