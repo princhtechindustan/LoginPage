@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:login_page/db/dbaddmovie.dart';
 import 'package:login_page/db/dbmodel.dart';
@@ -34,6 +35,7 @@ class _ShowDataBaseState extends State<ShowDataBase> {
         ),
       ),
       body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         child: Column(
           children: [
             _fetchData(),
@@ -71,16 +73,19 @@ class _ShowDataBaseState extends State<ShowDataBase> {
               ),
             );
           },
-          child: Container(
-            height: 40.0,
-            width: 100,
-            color: Colors.red,
-            child: Center(
-              child: Text(
-                "Add Product",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: Container(
+              height: 40.0,
+              width: 100,
+              color: Colors.red,
+              child: Center(
+                child: Text(
+                  "Add Movie List",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -91,7 +96,7 @@ class _ShowDataBaseState extends State<ShowDataBase> {
 
     widgets.add(
       Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [_buildDataTable(data)],
       ),
     );
@@ -101,98 +106,102 @@ class _ShowDataBaseState extends State<ShowDataBase> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: widgets,
       ),
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.only(top: 20),
     );
   }
 
   _buildDataTable(List<MovieModel>? model) {
-    return DataTable(
-      columns: [
-        DataColumn(
-          label: Text(
-            "Product Name",
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w900,
+    return Padding(
+      padding: const EdgeInsets.only(top: 20),
+      child: DataTable(
+        columns: [
+          DataColumn(
+            label: Text(
+              "Movie Name",
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ),
-        ),
-        DataColumn(
-          label: Text(
-            "Price",
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w900,
+          DataColumn(
+            label: Text(
+              "Director name",
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ),
-        ),
-        DataColumn(
-          label: Text(
-            "Action",
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
+          DataColumn(
+            label: Text(
+              "Action",
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      ],
-      sortColumnIndex: 1,
-      rows: model!
-          .map(
-            (data) => DataRow(
-              cells: <DataCell>[
-                DataCell(
-                  Text(
-                    data.movieName,
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ),
-                DataCell(
-                  Text(
-                    data.directorName,
-                    style: TextStyle(
-                      fontSize: 12,
+        ],
+        sortColumnIndex: 1,
+        rows: model!
+            .map(
+              (data) => DataRow(
+                cells: <DataCell>[
+                  DataCell(
+                    Text(
+                      data.movieName,
+                      style: TextStyle(fontSize: 10),
                     ),
                   ),
-                ),
-                DataCell(
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        new IconButton(
-                          padding: EdgeInsets.all(0),
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DbAddMovie(
-                                  model: data,
+                  DataCell(
+                    Text(
+                      data.directorName,
+                      style: TextStyle(
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          new IconButton(
+                            padding: EdgeInsets.all(0),
+                            icon: Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DbAddMovie(
+                                    modelC: data,
+                                    isEditMode: true,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                        new IconButton(
-                          padding: EdgeInsets.all(0),
-                          icon: Icon(Icons.clear),
-                          onPressed: () {
-                            dbService.deleteProduct(data).then((value) {
-                              setState(() {
-                                Navigator.of(context);
+                              );
+                            },
+                          ),
+                          new IconButton(
+                            padding: EdgeInsets.all(0),
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              dbService.deleteProduct(data).then((value) {
+                                setState(() {
+                                  Navigator.of(context);
+                                });
                               });
-                            });
-                          },
-                        ),
-                      ],
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          )
-          .toList(),
+                ],
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 }
